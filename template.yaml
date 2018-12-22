@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Enoshima Wind Crawler
+Resources:
+  EnowindRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        -
+          PolicyName: "enowind_role"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action: "cloudwatch:*"
+                Resource: "*"
+              -
+                Effect: "Allow"
+                Action: "dynamodb:*"
+                Resource: "*"
+              -
+                Effect: "Allow"
+                Action: "s3:*"
+                Resource: "*"
+
+  DataTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: timestamp
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  CrawlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: crawler.handler
+      CodeUri: ./package.zip
+      Runtime: python3.6
+      Timeout: 30
+      Role: !GetAtt EnowindRole.Arn
+      Events:
+        GetResource:
+          Type: Schedule
+          Properties:
+            Schedule: rate(5 minutes)
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DataTable
+          BUCKET_NAME: 'enowind.koheik.com'

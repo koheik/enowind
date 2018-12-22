@@ -1,0 +1,81 @@
+<head>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+<div id="main"></div>
+<script>
+	var url ='current.json';
+
+	fetch(url)
+		.then(response => {
+			return response.text();
+		})
+		.then(body => {
+			series = JSON.parse(body)
+			var aws_y = series['average_wind_speed']
+			var mws_y = series['max_wind_speed']
+
+			var aws = {
+			  x: series['timestamp'],
+			  y: aws_y,
+			  mode: 'lines',
+			  name: 'avg wind speed'
+			};
+
+			var mws = {
+			  x: series['timestamp'],
+			  y: mws_y,
+			  mode: 'lines',
+			  name: 'max wind speed'
+			};
+
+			var awd = {
+			  x: series['timestamp'],
+			  y: series['average_wind_direction'],
+			  mode: 'markers',
+			  name: 'avg wind dir',
+			  yaxis: 'y2'
+			};
+
+			var data = [ aws, mws, awd ];
+
+			var title = 'Enoshima Wind'
+			if (aws_y.length > 0 && mws_y.length > 0) {
+				title += ' (Avg: ' + aws_y[aws_y.length - 1] + ' kt' +
+					', Max: ' + mws_y[mws_y.length - 1] + ' kt)'
+			}
+			var layout = {
+			 	title: title,
+        // margin: {
+        //   t: 20,
+        //   l: 20,
+        //   r: 20,
+        //   b: 20
+        // },
+				yaxis: {
+					title: 'Wind Speed (knot)',
+			    showgrid: true,
+			    zeroline: true,
+			    range: [0, 26],
+			    dtick: 2
+				  //  gridcolor: '#bdbdbd',
+    		  //  gridwidth: 1
+				},
+				yaxis2: {
+					title: 'Wind Direction (deg)',
+					titlefont: {color: 'rgb(148, 103, 189)'},
+					tickfont: {color: 'rgb(148, 103, 189)'},
+					overlaying: 'y',
+			    showgrid: false,
+			    zeroline: false,
+					side: 'right',
+					range: [-10, 390],
+			    dtick: 45
+				}
+			};
+
+			Plotly.newPlot('main', data, layout);
+		});
+</script>
+</body>

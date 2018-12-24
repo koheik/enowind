@@ -1,4 +1,13 @@
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXX-X"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-XXXXXX-X');
+	</script>
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
@@ -40,11 +49,17 @@
 
 			var data = [ aws, mws, awd ];
 
-			var title = 'Enoshima Wind'
+			var title = 'Enoshima '
 			if (aws_y.length > 0 && mws_y.length > 0) {
 				title += ' (Avg: ' + aws_y[aws_y.length - 1] + ' kt' +
 					', Max: ' + mws_y[mws_y.length - 1] + ' kt)'
 			}
+
+			ymax = Math.max.apply(null, mws_y) + 2
+			if (ymax < 22) {
+				ymax = 22
+			}
+			console.log(ymax)
 			var layout = {
 			 	title: title,
         // margin: {
@@ -57,7 +72,7 @@
 					title: 'Wind Speed (knot)',
 			    showgrid: true,
 			    zeroline: true,
-			    range: [0, 26],
+			    range: [0, ymax],
 			    dtick: 2
 				  //  gridcolor: '#bdbdbd',
     		  //  gridwidth: 1

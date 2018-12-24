@@ -14,16 +14,16 @@ def update(table_name, bucket_name):
 	table = dynamodb.Table(table_name)
 
 	today = datetime.now().strftime('%Y-%m-%d')
-	low = today + ' 00:00:00'
-	high = today + ' 23:59:59'
 
-	# response = table.query(
-	#     KeyConditionExpression=Key('timestamp').between(low, high)
-	# )
-
-	response = table.scan(
-		FilterExpression=Key('timestamp').between(low, high)
+	response = table.query(
+	    KeyConditionExpression=Key('date').eq(today)
 	)
+
+	# low = today + ' 00:00:00'
+	# high = today + ' 23:59:59'
+	# response = table.scan(
+	# 	FilterExpression=Key('timestamp').between(low, high)
+	# )
 
 	data = []
 	for itm in response['Items']:
@@ -35,7 +35,7 @@ def update(table_name, bucket_name):
 			float(itm['average_wind_direction'])
 		])
 
-	data.sort()
+	# data.sort()
 
 	x = []
 	y = []

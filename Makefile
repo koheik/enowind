@@ -20,7 +20,7 @@ package.yaml: template.yaml package.zip
 deploy: package.yaml
 	sam deploy \
 		--template-file=package.yaml \
-		--stack-name=Enowind \
+		--stack-name=Enowind2 \
 		--capabilities=CAPABILITY_IAM
 
 test: package.zip

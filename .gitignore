@@ -3,3 +3,5 @@ build
 html/current.json
 package.zip
 package.yaml
+src/__pycache__
+__pycache__

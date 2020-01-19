@@ -28,11 +28,22 @@ def update(table_name, bucket_name):
 	data = []
 	for itm in response['Items']:
 		dt = datetime.strptime(itm['timestamp'], '%Y-%m-%d %H:%M:%S')
+		aws = 0.0
+		if "average_wind_speed" in itm:
+			aws = float(itm['average_wind_speed'])
+
+		mws = 0.0
+		if "max_wind_speed" in itm:
+			mws = float(itm['max_wind_speed'])
+		awd = 0.0
+		if "average_wind_speed" in itm:
+			awd = float(itm['average_wind_direction'])
+
 		data.append([
 			dt.strftime('%Y-%m-%d %H:%M:%S'),
-			float(itm['average_wind_speed']),
-			float(itm['max_wind_speed']),
-			float(itm['average_wind_direction'])
+			aws,
+			mws,
+			awd
 		])
 
 	# data.sort()
